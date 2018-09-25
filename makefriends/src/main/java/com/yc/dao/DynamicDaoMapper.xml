@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yc.dao.DynamicDao">
+	<cache eviction="FIFO" flushInterval="60000" size="512" readOnly="true"/>
+	
+    <select id="findMyDynamic" resultType="com.yc.bean.Dynamic">
+		select * from dynamic where user_id=#{user_id}
+	</select>
+   
+    <insert id="addMyDynamic" parameterType="com.yc.bean.Dynamic" useGeneratedKeys="true" keyProperty="dynamic_id">
+		insert into dynamic (user_id,time,content,count) values(#{user_id},now(),#{content},#{count}) 
+	</insert>
+	
+	
+</mapper>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yc.dao.FriendsDao">
+	<cache eviction="FIFO" flushInterval="60000" size="512" readOnly="true"/>
+ 
+	
+	<insert id="insertFriends" parameterType="com.yc.bean.Friends">
+		insert into friends values(#{user_id1},#{user_id2},#{status})
+	</insert>
+	
+	<select id="validateFriends" parameterType="com.yc.bean.Friends" resultType="com.yc.bean.Friends" >
+		select * from friends where user_id1=#{user_id1} and user_id2=#{user_id2}
+	</select>
+	
+	
+	<select id="searchAllFriends" resultType="com.yc.bean.User" parameterType="com.yc.bean.Friends">
+		select * from user where user_id in (select user_id2 from friends where user_id1=#{user_id1} and status=1)
+	</select>
+	
+	
+	
+	<select id="findUser" resultType="com.yc.bean.User" parameterType="com.yc.bean.Friends">
+		select * from user where user_id =#{user_id} 
+	</select>
+	
+ 
+	<select id="findMyValidateInfo" resultType="com.yc.bean.User" parameterType="com.yc.bean.Friends">
+		select * from user where user_id in (select user_id1 from friends where user_id2=#{user_id2} and status=0)
+	</select>
+	
+	
+	<insert id="agree" parameterType="com.yc.bean.Friends">
+		insert into friends values(#{user_id1},#{user_id2},#{status}) 
+	</insert>
+	<update id="agree1" parameterType="com.yc.bean.Friends">
+		update friends set status=1 where user_id1=#{user_id1}
+	</update>
+	
+	
+	
+	<delete id="disagreeRequest" parameterType="com.yc.bean.Friends">
+		delete from friends where user_id1 = #{user_id1} and user_id2 = #{user_id2}
+	</delete>
+
+
+</mapper>

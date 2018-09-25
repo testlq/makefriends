@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yc.dao.CommentDao">
+	  <cache eviction="FIFO" flushInterval="60000" size="512" readOnly="true"/>
+	  <!-- <resultMap type="com.yc.bean.Dynamic"  id="duf">
+	  	 <id column="dynamic_id" property="dynamic_id"/>
+	  	 <result column="user_id" property="user_id"/>
+	  	 <result column="time" property="time"/>
+	  	 <result column="content" property="content"/>
+	  	 <result column="count" property="count"/>
+	  	 <association property="user" javaType="com.yc.bean.User">
+	  		 	<id column="user_id" property="user_id"/>
+	  		 	<result column="username" property="username"/>
+	  	 </association>
+	  </resultMap>
+	  <select id="findFriendDynamic"  parameterType="com.yc.bean.Friends" resultMap="duf">
+	   		select  dynamic.*,user.username from dynamic inner join user on dynamic.user_id = user.user_id
+	   		where dynamic.user_id in (select user_id2 from friends where user_id1=#{user_id1} and status = 1)
+	  </select> -->
+	  
+	  <select id="findFriendDynamic"  parameterType="com.yc.bean.Friends" resultType="com.yc.bean.Dynamic">
+	   		select dynamic.*,user.username from dynamic inner join user on dynamic.user_id = user.user_id
+	   		where dynamic.user_id in (select user_id2 from friends where user_id1=#{user_id1} and status = 1)
+	  </select>
+	  
+	  
+	 
+	<insert id="comment" parameterType="com.yc.bean.Comment" useGeneratedKeys="true" keyProperty="comment_id">
+		insert into comment(user_id,dynamic_id,time,content,count) values(#{user_id},#{dynamic_id},curdate(),#{content},0) 
+	</insert>
+	
+	
+	<select id="findAllComments"  parameterType="com.yc.bean.Comment" resultType="com.yc.bean.Comment">
+	   		select comment.* ,user.username from comment inner join user on comment.user_id= user.user_id where comment.dynamic_id = #{dynamic_id}
+	</select>
+	
+	
+	
+	<select id="showStrangerdynamic"  parameterType="com.yc.bean.Friends" resultType="com.yc.bean.Dynamic">
+		select dynamic.*,user.username from dynamic inner join user on dynamic.user_id = user.user_id
+	   	where dynamic.user_id not in ((select user_id2 from friends where user_id1=#{arg0} and status = 1),#{arg1})
+	</select>
+	
+	
+</mapper>

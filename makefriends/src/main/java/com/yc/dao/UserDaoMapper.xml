@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yc.dao.UserDao">
+	<insert id="regInfo" parameterType="com.yc.bean.User"
+		useGeneratedKeys="true" keyProperty="user_id">
+		insert into user (username,age,password,email,sex,content)
+		values(#{username},#{age},#{password},
+		#{email},#{sex},#{content})
+	</insert>
+
+	<select id="login" resultType="com.yc.bean.User">
+		select * from user where username=#{arg0} and password=#{arg1}
+	</select>
+
+	<select id="findByterm" resultType="com.yc.bean.User">
+		select * from user
+		<where>
+			<choose>
+				<when test="user_id!=null">
+					user_id=#{user_id}
+				</when>
+				<when test="username!=null&amp;&amp;username.trim()!=&quot;&quot;">
+					username=#{username}
+				</when>
+			</choose>
+		</where>
+	</select>
+	
+	
+	
+	<!--完善信息  根据用户名查看基本信息-->
+	<select id="findInformation" resultType="com.yc.bean.User">
+		select * from user where username=#{username}
+	</select>
+	
+	
+	<update id="perfectAllInformation" parameterType="com.yc.bean.User" >
+	    update user set 
+	    height=#{height},weight=#{weight},bloodtype=#{bloodtype},star=#{star},marriage=#{marriage},position=#{position},
+	    education=#{education},hobby=#{hobby},school=#{school},major=#{major},income=#{income}
+	    where username=#{username}
+	</update>
+	
+	
+	<select id="findObj"  parameterType="com.yc.bean.User" resultType="com.yc.bean.User">
+   		select * from user 
+   		 <where>
+			<if test="sex!=null&amp;&amp;sex!=&quot;&quot;">
+				sex=#{sex}
+			</if>
+			 <if test="position!=null&amp;&amp;position!=&quot;&quot;">
+				and position=#{position}
+			</if>
+			<if test="hobby!=null&amp;&amp;hobby!=&quot;&quot;">
+				and hobby=#{hobby}
+			</if>
+			<if test="age!=null&amp;&amp;age!=&quot;&quot;">
+				and age=#{age}
+			</if>
+			<if test="marriage!=null&amp;&amp;marriage!=&quot;&quot;">
+				and marriage=#{marriage}
+			</if>
+		</where> 
+   </select>
+   
+   
+   	<insert id="addEmail" parameterType="com.yc.bean.Email">
+	     insert into email(username,iemail,uemail,content,time) value(#{username},#{iemail},#{uemail},#{content},now())
+	</insert>
+	
+	<select id="listEmail"  resultType="com.yc.bean.Email" parameterType="com.yc.bean.Email">
+		select * from email where username=#{username}
+	</select>
+	
+</mapper>
